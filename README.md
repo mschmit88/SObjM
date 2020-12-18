@@ -239,10 +239,10 @@ Here is a list of the built-in matchers that are ready to use.
 - endsWithIgnoreCase(String)
 - equals(Object)
 - equalsAny(Object[])
-- equalsAnyIgnoreCase(List<String>)
+- equalsAnyIgnoreCase(String[])
 - equalsIgnoreCase(String)
 - equalsNone(Object[])
-- equalsNoneIgnoreCase(List<String>)
+- equalsNoneIgnoreCase(String[])
 - greater(Object) - numeric types
 - greaterEquals(Object) - numeric types
 - length(Integer)
