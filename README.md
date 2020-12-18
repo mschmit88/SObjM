@@ -14,7 +14,7 @@ Accounts:
 
 So the code meet this requirement typically looks like this:
 
-```java
+```javascript
 List<Account> accs = // Trigger.new or wherever they came from
 List<Account> accsFiltered = new List<Account>();
 
@@ -45,13 +45,13 @@ The outcome is just one class that has zero dependencies and can be used in any 
 
 The previous example using this class look like this:
 
-```java
+```javascript
 List<Account> accs = // Trigger.new or wherever they came from
 List<Account> accsFiltered = (List<Account>) SObjM.and_x(
-                                SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
-                                SObjM.valueOf(Account.Type).equals('Partner'),
-                                SObjM.valueOf(Account.BillingCountry).equals('Germany')
-                            ).matches(accounts);
+        SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
+        SObjM.valueOf(Account.Type).equals('Partner'),
+        SObjM.valueOf(Account.BillingCountry).equals('Germany')
+    ).matches(accounts);
 ```
 
 I will be more than happy for feedback and maybe even ideas for new functionalities that I have missed :)
@@ -72,7 +72,7 @@ Using this method, you can create a matcher who matches on an (new) sObject.
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher matcher = SObjM.valueOf(Account.Name).equals('xzy');
 ```
 
@@ -82,7 +82,7 @@ Using this method, you can create a matcher who matches on an old sObject if pre
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher matcher = SObjM.priorValueOf(Account.Name).equals('xzy');
 ```
 
@@ -92,7 +92,7 @@ Using this method, you can create a matcher who negates the matcher that is pass
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher matcher = SObjM.not_x( SObjM.priorValueOf(Account.Name).equals('xzy') );
 ```
 
@@ -102,23 +102,23 @@ Using this method, you can create a matcher who groups all passed matchers by an
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher matcher = SObjM.and_x(
-                                SObjM.valueOf(Account.Name).equals('xzy'),
-                                SObjM.valueOf(Account.Type).notEquals('abc'));
+    SObjM.valueOf(Account.Name).equals('xzy'),
+    SObjM.valueOf(Account.Type).notEquals('abc'));
 ```
 
 Up to 5 matchers can be passed without the need to create a list of matchers. Otherwise the code looks like this:
 
-```java
+```javascript
 SObjectM.Matcher matcher = SObjM.and_x(new Set<SObjM.Matcher> {
-                                SObjM.valueOf(Account.Name).equals('xzy'),
-                                SObjM.valueOf(Account.Type).notEquals('a')),
-                                SObjM.valueOf(Account.Type).notEquals('b')),
-                                SObjM.valueOf(Account.Type).notEquals('c')),
-                                SObjM.valueOf(Account.Type).notEquals('d')),
-                                SObjM.valueOf(Account.Type).notEquals('e'))
-                            });
+    SObjM.valueOf(Account.Name).equals('xzy'),
+        SObjM.valueOf(Account.Type).notEquals('a')),
+        SObjM.valueOf(Account.Type).notEquals('b')),
+        SObjM.valueOf(Account.Type).notEquals('c')),
+        SObjM.valueOf(Account.Type).notEquals('d')),
+        SObjM.valueOf(Account.Type).notEquals('e'))
+    });
 
 ```
 
@@ -138,7 +138,7 @@ If you need to check if <b>one</b> sObject meets certain criterias, then use thi
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
 
 if(someMeaningfulNameMatcher.matches(someAccount)) {
@@ -152,10 +152,10 @@ If you need to check if <b>one</b> sObject meets certain criterias and also need
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-                                                    SObjM.valueOf(Account.Name).equals('new'),
-                                                    SObjM.priorValueOf(Account.Name).equals('old'));
+    SObjM.valueOf(Account.Name).equals('new'),
+    SObjM.priorValueOf(Account.Name).equals('old'));
 
 if(accountNameChangedFromNewToOld.matches(newAccount, oldAccount)) {
     // it matches!
@@ -168,7 +168,7 @@ If you need to check if <b>multiple</b> sObjects meet certain criterias, then us
 
 Example:
 
-```java
+```javascript
 SObjM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
 SObjM.Result res = someMeaningfulNameMatcher.matches(accounts);
 
@@ -182,10 +182,10 @@ If you need to check if <b>multiple</b> sObjects meet certain criterias and you 
 
 Example:
 
-```java
+```javascript
 SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-                                                    SObjM.valueOf(Account.Name).equals('new'),
-                                                    SObjM.priorValueOf(Account.Name).equals('old'));
+    SObjM.valueOf(Account.Name).equals('new'),
+    SObjM.priorValueOf(Account.Name).equals('old'));
 
 SObjM.Result res = someMeaningfulNameMatcher.matches(newAccounts, oldAccountsById);
 
@@ -199,7 +199,7 @@ If the built-in matchers do not meet your requirement, then you can easily creat
 
 Example:
 
-```java
+```javascript
 public class BeFirstDayOfMonth extends SObjM.Matcher {
     public BeFirstDayOfMonth() {
         super();
@@ -219,7 +219,7 @@ public class BeFirstDayOfMonth extends SObjM.Matcher {
 
 You can then use the custom matcher by passing an instance of it into the methods must() / mustNot()
 
-```java
+```javascript
 SObjM.Matcher m = SObjM.valueOf(Opportunity.CloseDate).must(new BeFirstDayOfMonth());
 ```
 
