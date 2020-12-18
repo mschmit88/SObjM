@@ -241,35 +241,35 @@ public class SObjM {
         }
 
         public SObjM.Matcher greater(Object limitValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             limitValue, 
                                             NumericComparatorType.GT);
         }
 
         public SObjM.Matcher less(Object limitValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             limitValue, 
                                             NumericComparatorType.LT);
         }
 
         public SObjM.Matcher greaterEquals(Object limitValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             limitValue, 
                                             NumericComparatorType.GTE);
         }
 
         public SObjM.Matcher lessEquals(Object limitValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             limitValue, 
                                             NumericComparatorType.LTE);
         }
 
         public SObjM.Matcher betweenIncl(Object rightHandValue, Object leftHandValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             rightHandValue, 
                                             leftHandValue, 
@@ -277,7 +277,7 @@ public class SObjM {
         }
 
         public SObjM.Matcher betweenExcl(Object rightHandValue, Object leftHandValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             rightHandValue, 
                                             leftHandValue, 
@@ -285,7 +285,7 @@ public class SObjM {
         }
         
         public SObjM.Matcher outsideIncl(Object rightHandValue, Object leftHandValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             rightHandValue, 
                                             leftHandValue, 
@@ -293,7 +293,7 @@ public class SObjM {
         }
 
         public SObjM.Matcher outsideExcl(Object rightHandValue, Object leftHandValue) {
-            return new NumericComparator(	this.field, 
+            return new NumericComparator(   this.field, 
                                             this.isPriorValue, 
                                             rightHandValue, 
                                             leftHandValue, 
@@ -1181,7 +1181,7 @@ public class SObjM {
         private final Object value2;
         private final NumericComparatorType type;
 
-        private NumericComparator(	SObjectField field, 
+        private NumericComparator(  SObjectField field, 
                                     Boolean isPriorValue, 
                                     Object value1, 
                                     NumericComparatorType type) {
@@ -1190,7 +1190,7 @@ public class SObjM {
             this.type = type;
         }
 
-        private NumericComparator(	SObjectField field, 
+        private NumericComparator(  SObjectField field, 
                                     Boolean isPriorValue, 
                                     Object value1, 
                                     Object value2, 
