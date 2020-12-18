@@ -51,7 +51,7 @@ List<Account> accsFiltered = (List<Account>) SObjM.and_x(
         SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
         SObjM.valueOf(Account.Type).equals('Partner'),
         SObjM.valueOf(Account.BillingCountry).equals('Germany')
-    ).matches(accounts);
+    ).matches(accs);
 ```
 
 I will be more than happy for feedback and maybe even ideas for new functionalities that I have missed :)
