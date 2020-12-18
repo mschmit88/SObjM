@@ -19,13 +19,13 @@ List<Account> accs = // Trigger.new or wherever they came from
 List<Account> accsFiltered = new List<Account>();
 
 for(Account acc : accs) {
-	if(
-		acc.AnnualRevenue >= 200000 && acc.AnnualRevenue <= 300000
-		&& acc.Type == 'Partner'
-		&& acc.BillingCountry == 'Germany'
-	) {
-		accsFiltered.add(acc);
-	}
+    if(
+        acc.AnnualRevenue >= 200000 && acc.AnnualRevenue <= 300000
+        && acc.Type == 'Partner'
+        && acc.BillingCountry == 'Germany'
+    ) {
+        accsFiltered.add(acc);
+    }
 }
 
 // perform further actions with accsFiltered
@@ -48,10 +48,10 @@ The previous example using this class look like this:
 ```java
 List<Account> accs = // Trigger.new or wherever they came from
 List<Account> accsFiltered = (List<Account>) SObjM.and_x(
-								SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
-								SObjM.valueOf(Account.Type).equals('Partner'),
-								SObjM.valueOf(Account.BillingCountry).equals('Germany')
-							).matches(accounts);
+                                SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
+                                SObjM.valueOf(Account.Type).equals('Partner'),
+                                SObjM.valueOf(Account.BillingCountry).equals('Germany')
+                            ).matches(accounts);
 ```
 
 I will be more than happy for feedback and maybe even ideas for new functionalities that I have missed :)
@@ -104,21 +104,21 @@ Example:
 
 ```java
 SObjectM.Matcher matcher = SObjM.and_x(
-								SObjM.valueOf(Account.Name).equals('xzy'),
-								SObjM.valueOf(Account.Type).notEquals('abc'));
+                                SObjM.valueOf(Account.Name).equals('xzy'),
+                                SObjM.valueOf(Account.Type).notEquals('abc'));
 ```
 
 Up to 5 matchers can be passed without the need to create a list of matchers. Otherwise the code looks like this:
 
 ```java
 SObjectM.Matcher matcher = SObjM.and_x(new Set<SObjM.Matcher> {
-								SObjM.valueOf(Account.Name).equals('xzy'),
-								SObjM.valueOf(Account.Type).notEquals('a')),
-								SObjM.valueOf(Account.Type).notEquals('b')),
-								SObjM.valueOf(Account.Type).notEquals('c')),
-								SObjM.valueOf(Account.Type).notEquals('d')),
-								SObjM.valueOf(Account.Type).notEquals('e'))
-							});
+                                SObjM.valueOf(Account.Name).equals('xzy'),
+                                SObjM.valueOf(Account.Type).notEquals('a')),
+                                SObjM.valueOf(Account.Type).notEquals('b')),
+                                SObjM.valueOf(Account.Type).notEquals('c')),
+                                SObjM.valueOf(Account.Type).notEquals('d')),
+                                SObjM.valueOf(Account.Type).notEquals('e'))
+                            });
 
 ```
 
@@ -142,7 +142,7 @@ Example:
 SObjectM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
 
 if(someMeaningfulNameMatcher.matches(someAccount)) {
-	// it matches!
+    // it matches!
 }
 ```
 
@@ -154,11 +154,11 @@ Example:
 
 ```java
 SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-													SObjM.valueOf(Account.Name).equals('new'),
-													SObjM.priorValueOf(Account.Name).equals('old'));
+                                                    SObjM.valueOf(Account.Name).equals('new'),
+                                                    SObjM.priorValueOf(Account.Name).equals('old'));
 
 if(accountNameChangedFromNewToOld.matches(newAccount, oldAccount)) {
-	// it matches!
+    // it matches!
 }
 ```
 
@@ -184,8 +184,8 @@ Example:
 
 ```java
 SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-													SObjM.valueOf(Account.Name).equals('new'),
-													SObjM.priorValueOf(Account.Name).equals('old'));
+                                                    SObjM.valueOf(Account.Name).equals('new'),
+                                                    SObjM.priorValueOf(Account.Name).equals('old'));
 
 SObjM.Result res = someMeaningfulNameMatcher.matches(newAccounts, oldAccountsById);
 
@@ -201,19 +201,19 @@ Example:
 
 ```java
 public class BeFirstDayOfMonth extends SObjM.Matcher {
-	public BeFirstDayOfMonth() {
-		super();
-	}
+    public BeFirstDayOfMonth() {
+        super();
+    }
 
-	protected Boolean matchesImpl(SObject sObj) {
-		Date dateValue = (Date) sObj.get(this.field);
+    protected Boolean matchesImpl(SObject sObj) {
+        Date dateValue = (Date) sObj.get(this.field);
 
-		if(dateValue == null) {
-			return false;
-		}
+        if(dateValue == null) {
+            return false;
+        }
 
-		return dateValue.day() == 1;
-	}
+        return dateValue.day() == 1;
+    }
 }
 ```
 
