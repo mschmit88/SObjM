@@ -73,7 +73,7 @@ Using this method, you can create a matcher who matches on an (new) sObject.
 Example:
 
 ```javascript
-SObjectM.Matcher matcher = SObjM.valueOf(Account.Name).equals('xzy');
+SObjM.Matcher matcher = SObjM.valueOf(Account.Name).equals('xzy');
 ```
 
 #### priorValueOf()
@@ -83,7 +83,7 @@ Using this method, you can create a matcher who matches on an old sObject if pre
 Example:
 
 ```javascript
-SObjectM.Matcher matcher = SObjM.priorValueOf(Account.Name).equals('xzy');
+SObjM.Matcher matcher = SObjM.priorValueOf(Account.Name).equals('xzy');
 ```
 
 #### not_x()
@@ -93,7 +93,7 @@ Using this method, you can create a matcher who negates the matcher that is pass
 Example:
 
 ```javascript
-SObjectM.Matcher matcher = SObjM.not_x( SObjM.priorValueOf(Account.Name).equals('xzy') );
+SObjM.Matcher matcher = SObjM.not_x( SObjM.priorValueOf(Account.Name).equals('xzy') );
 ```
 
 #### and_x()
@@ -103,7 +103,7 @@ Using this method, you can create a matcher who groups all passed matchers by an
 Example:
 
 ```javascript
-SObjectM.Matcher matcher = SObjM.and_x(
+SObjM.Matcher matcher = SObjM.and_x(
     SObjM.valueOf(Account.Name).equals('xzy'),
     SObjM.valueOf(Account.Type).notEquals('abc'));
 ```
@@ -111,7 +111,7 @@ SObjectM.Matcher matcher = SObjM.and_x(
 Up to 5 matchers can be passed without the need to create a list of matchers. Otherwise the code looks like this:
 
 ```javascript
-SObjectM.Matcher matcher = SObjM.and_x(new Set<SObjM.Matcher> {
+SObjM.Matcher matcher = SObjM.and_x(new Set<SObjM.Matcher> {
     SObjM.valueOf(Account.Name).equals('xzy'),
         SObjM.valueOf(Account.Type).notEquals('a')),
         SObjM.valueOf(Account.Type).notEquals('b')),
@@ -139,7 +139,7 @@ If you need to check if <b>one</b> sObject meets certain criterias, then use thi
 Example:
 
 ```javascript
-SObjectM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
+SObjM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
 
 if(someMeaningfulNameMatcher.matches(someAccount)) {
     // it matches!
@@ -153,7 +153,7 @@ If you need to check if <b>one</b> sObject meets certain criterias and also need
 Example:
 
 ```javascript
-SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
+SObjM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
     SObjM.valueOf(Account.Name).equals('new'),
     SObjM.priorValueOf(Account.Name).equals('old'));
 
@@ -183,7 +183,7 @@ If you need to check if <b>multiple</b> sObjects meet certain criterias and you 
 Example:
 
 ```javascript
-SObjectM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
+SObjM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
     SObjM.valueOf(Account.Name).equals('new'),
     SObjM.priorValueOf(Account.Name).equals('old'));
 
