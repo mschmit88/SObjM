@@ -2,17 +2,17 @@
 
 ## Intention
 
-Since I started working with Salesforce Apex, I disliked the fact that one must re-write (pretty much) the same boiler plate code to sort out some sObjects (mostly in triggers) to perform certain actions on them.
+I always disliked that I have to write lots boilerplate code to extract certain records from a list of sObjects. Apart from that, the code is not easy to read as soon as the logic becomes more complex which makes it hard to find bugs.
 
-A filter requirement could look like this:
+A requirement could look like this:
 
-Accounts:
+Extract accounts:
 
 - having an annual revenue between 200k and 300k
-- and of type "Partner"
-- and billing country is Germany
+- and are of type "Partner"
+- and whose billing country is Germany
 
-So the code meet this requirement typically looks like this:
+So the code typically looks like this:
 
 ```javascript
 List<Account> accs = // Trigger.new or wherever they came from
@@ -31,26 +31,24 @@ for(Account acc : accs) {
 // perform further actions with accsFiltered
 ```
 
-So spending a lot of time on writing for loops and produce code that is not easy to read does not seem to be a good idea.
-
-Sure it can be made more readable by seperating the conditions into multiple booleans or putting some logic into util classes. But still, the use cases can be way more complex and over time the code turns more and more into spaghetti (especially if the code also needs to deal with old and new sObjects).
+Adding some or-conditions or dealing with old and new versions of sObjects in triggers will make it very easy to introduce bugs that are hard to find.
 
 ## Solution
 
-I had been googling to find a project that solves this problem for some time but never really found a solution that had the functionalities I was looking for.
+For some time, I had been googling to find a project that solves this problem but never really found a solution that had the functionalities I was looking for.
 
-So being forced to stay at home during the COVID pandemic gave me some time to come up with a solution that fits my requirements.
+So being forced to stay at home during the COVID pandemic gave me some time to come up with a solution that fits (most of) my requirements.
 
 The outcome is just one class that has zero dependencies and can be used in any org. New matchers can be implmented by extending the SObjM.Matcher class. Keep reading and further information ;)
 
-The previous example using this class look like this:
+The previous example using this class looks like this:
 
 ```javascript
 List<Account> accs = // Trigger.new or wherever they came from
 List<Account> accsFiltered = (List<Account>) SObjM.and_x(
-        SObjM.valueOf(Account.AnnualRevenue).betweenIncl(200000, 300000),
-        SObjM.valueOf(Account.Type).equals('Partner'),
-        SObjM.valueOf(Account.BillingCountry).equals('Germany')
+        SObjM.val(Account.AnnualRevenue).betweenIncl(200000, 300000),
+        SObjM.val(Account.Type).equals('Partner'),
+        SObjM.val(Account.BillingCountry).equals('Germany')
     ).matches(accs);
 ```
 
@@ -66,24 +64,24 @@ Just copy paste both classes SObjM and SObjM_T into your org and you are ready t
 
 There are 5 ways to instantiate a matcher:
 
-#### valueOf()
+#### val()
 
-Using this method, you can create a matcher who matches on an (new) sObject.
+Using this method, you can create a matcher who matches on a sObject.
 
 Example:
 
 ```javascript
-SObjM.Matcher matcher = SObjM.valueOf(Account.Name).equals('xzy');
+SObjM.Matcher matcher = SObjM.val(Account.Name).equals('xyz');
 ```
 
-#### priorValueOf()
+#### priorVal()
 
-Using this method, you can create a matcher who matches on an old sObject if present. If old sObject is not present, it will behave just like valueOf().
+Using this method, you can create a matcher who matches the old sObject if present. If old sObject is not present, it will behave just like val().
 
 Example:
 
 ```javascript
-SObjM.Matcher matcher = SObjM.priorValueOf(Account.Name).equals('xzy');
+SObjM.Matcher matcher = SObjM.priorVal(Account.Name).equals('xyz');
 ```
 
 #### not_x()
@@ -93,7 +91,7 @@ Using this method, you can create a matcher who negates the matcher that is pass
 Example:
 
 ```javascript
-SObjM.Matcher matcher = SObjM.not_x( SObjM.priorValueOf(Account.Name).equals('xzy') );
+SObjM.Matcher matcher = SObjM.not_x( SObjM.val(Account.Name).equals('xyz') );
 ```
 
 #### and_x()
@@ -104,20 +102,20 @@ Example:
 
 ```javascript
 SObjM.Matcher matcher = SObjM.and_x(
-    SObjM.valueOf(Account.Name).equals('xzy'),
-    SObjM.valueOf(Account.Type).notEquals('abc'));
+    SObjM.val(Account.Name).equals('xyz'),
+    SObjM.val(Account.Type).notEquals('abc'));
 ```
 
-Up to 5 matchers can be passed without the need to create a list of matchers. Otherwise the code looks like this:
+Up to 5 matchers can be passed without the need to create a list of matchers. For more than 5 matchers, the code looks like this:
 
 ```javascript
 SObjM.Matcher matcher = SObjM.and_x(new Set<SObjM.Matcher> {
-    SObjM.valueOf(Account.Name).equals('xzy'),
-        SObjM.valueOf(Account.Type).notEquals('a')),
-        SObjM.valueOf(Account.Type).notEquals('b')),
-        SObjM.valueOf(Account.Type).notEquals('c')),
-        SObjM.valueOf(Account.Type).notEquals('d')),
-        SObjM.valueOf(Account.Type).notEquals('e'))
+        SObjM.val(Account.Name).notEquals('1'),
+        SObjM.val(Account.Type).notEquals('2')),
+        SObjM.val(Account.Type).notEquals('3')),
+        SObjM.val(Account.Type).notEquals('4')),
+        SObjM.val(Account.Type).notEquals('5')),
+        SObjM.val(Account.Type).notEquals('6'))
     });
 
 ```
@@ -128,7 +126,7 @@ Same as and_x but or_x ;)
 
 ### Using a matcher
 
-As you have instantiated a matcher, you want to match one or multiple sObjects with it.
+As you have instantiated a matcher, you want to use it on one or multiple sObjects.
 
 To do so, you have four methods.
 
@@ -139,9 +137,9 @@ If you need to check if <b>one</b> sObject meets certain criterias, then use thi
 Example:
 
 ```javascript
-SObjM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
+SObjM.Matcher accNameIsXyz = SObjM.val(Account.Name).equals('xyz');
 
-if(someMeaningfulNameMatcher.matches(someAccount)) {
+if(accNameIsXyz.matches(someAccount)) {
     // it matches!
 }
 ```
@@ -154,8 +152,8 @@ Example:
 
 ```javascript
 SObjM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-    SObjM.valueOf(Account.Name).equals('new'),
-    SObjM.priorValueOf(Account.Name).equals('old'));
+    SObjM.val(Account.Name).equals('new'),
+    SObjM.priorVal(Account.Name).equals('old'));
 
 if(accountNameChangedFromNewToOld.matches(newAccount, oldAccount)) {
     // it matches!
@@ -169,14 +167,14 @@ If you need to check if <b>multiple</b> sObjects meet certain criterias, then us
 Example:
 
 ```javascript
-SObjM.Matcher someMeaningfulNameMatcher = SObjM.valueOf(Account.Name).equals('xyz');
-SObjM.Result res = someMeaningfulNameMatcher.matches(accounts);
+SObjM.Matcher accNameIsXyz = SObjM.val(Account.Name).equals('xyz');
+SObjM.Result res = accNameIsXyz.matches(accounts);
 
 List<Account> matchingAccounts = (List<Account>) res.hits;
 List<Account> nonMatchingAccounts = (List<Account>) res.misses;
 ```
 
-#### Boolean matches(List<SObject>, Map<Id, Sobject>)
+#### Boolean matches(List<SObject>, Map<Id, SObject>)
 
 If you need to check if <b>multiple</b> sObjects meet certain criterias and you also need to check the <b>old version</b> of the sObject, then use this method.
 
@@ -184,10 +182,10 @@ Example:
 
 ```javascript
 SObjM.Matcher accountNameChangedFromNewToOld = SObjM.and_x(
-    SObjM.valueOf(Account.Name).equals('new'),
-    SObjM.priorValueOf(Account.Name).equals('old'));
+    SObjM.val(Account.Name).equals('new'),
+    SObjM.priorVal(Account.Name).equals('old'));
 
-SObjM.Result res = someMeaningfulNameMatcher.matches(newAccounts, oldAccountsById);
+SObjM.Result res = accountNameChangedFromNewToOld.matches(newAccounts, oldAccountsById);
 
 List<Account> matchingAccounts = (List<Account>) res.hits;
 List<Account> nonMatchingAccounts = (List<Account>) res.misses;
@@ -220,14 +218,14 @@ public class BeFirstDayOfMonth extends SObjM.Matcher {
 You can then use the custom matcher by passing an instance of it into the methods must() / mustNot()
 
 ```javascript
-SObjM.Matcher m = SObjM.valueOf(Opportunity.CloseDate).must(new BeFirstDayOfMonth());
+SObjM.Matcher m = SObjM.val(Opportunity.CloseDate).must(new BeFirstDayOfMonth());
 ```
 
 ### Built-in matchers
 
 Here is a list of the built-in matchers that are ready to use.
 
-#### Available by valueOf() and priorValueOf()
+#### Available by val() and priorVal()
 
 - betweenExcl(Object, Object) - numeric types
 - betweenIncl(Object, Object) - numeric types
@@ -238,9 +236,9 @@ Here is a list of the built-in matchers that are ready to use.
 - endsWith(String)
 - endsWithIgnoreCase(String)
 - equals(Object)
-- equalsAny(Object[])
-- equalsAnyIgnoreCase(String[])
+- equals(Object[])
 - equalsIgnoreCase(String)
+- equalsIgnoreCase(String[])
 - equalsNone(Object[])
 - equalsNoneIgnoreCase(String[])
 - greater(Object) - numeric types
@@ -267,16 +265,16 @@ Here is a list of the built-in matchers that are ready to use.
 - startsWith(String)
 - startsWithIgnoreCase(String)
 
-#### Available by valueOf()
+#### Available by val()
 
 Will always return false if old sObject is not passed.
 
 - changed()
 - changedFrom(Object)
-- changedFromAny(Object[])
-- changedFromAnyTo(Object[], Object)
-- changedFromAnyToAny(Object[], Object[]>)
+- changedFrom(Object[])
 - changedFromTo(Object, Object)
-- changedFromToAny(Object, Object[])
+- changedFromTo(Object[], Object)
+- changedFromTo(Object, Object[])
+- changedFromTo(Object[], Object[]>)
 - changedTo(Object)
-- changedToAny(Object[])
+- changedTo(Object[])

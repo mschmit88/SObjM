@@ -9,15 +9,15 @@ private class SObjM_T {
     static void and_match() {
         System.assert(
             SObjM.and_x(
-                SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'Some Name', 'Some different Name'}),
-                SObjM.valueOf(Account.Industry).equals('Some Industry')
+                SObjM.val(Account.Name).equals(new List<String>{ 'Some Name', 'Some different Name'}),
+                SObjM.val(Account.Industry).equals('Some Industry')
             ).matches(new Account(Name = 'Some Name', Industry = 'Some Industry'))
         );
     }
 
     @IsTest
     static void and_multiple() {
-        SObjM.Matcher m = SObjM.valueOf(Account.Name).equals('Test');
+        SObjM.Matcher m = SObjM.val(Account.Name).equals('Test');
         System.assert(SObjM.and_x(m, m, m, m, m).matches(new Account(Name = 'Test')));
         System.assert(SObjM.and_x(m, m, m, m).matches(new Account(Name = 'Test')));
         System.assert(SObjM.and_x(m, m, m).matches(new Account(Name = 'Test')));
@@ -27,8 +27,8 @@ private class SObjM_T {
     static void and_noMatch() {
         System.assert(
             ! SObjM.and_x(new Set<SObjM.Matcher>{
-                SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'Some Name', 'Some different Name'}),
-                SObjM.valueOf(Account.Industry).equals('Some different Industry')
+                SObjM.val(Account.Name).equals(new List<String>{ 'Some Name', 'Some different Name'}),
+                SObjM.val(Account.Industry).equals('Some different Industry')
             }).matches(new Account(Name = 'Some Name', Industry = 'Some Industry'))
         );
     }
@@ -44,8 +44,8 @@ private class SObjM_T {
         acc2Old.Name = 'A old';
 
         SObjM.Result res = SObjM.and_x(
-                                SObjM.valueOf(Account.Name).changedTo('A'),
-                                SObjM.valueOf(Account.AnnualRevenue).equals(100)
+                                SObjM.val(Account.Name).changedTo('A'),
+                                SObjM.val(Account.AnnualRevenue).equals(100)
                             ).matches(
                                 new List<Account>{ acc1, acc2 },
                                 new Map<Id, Account>(new List<Account>{ acc1Old, acc2Old }));
@@ -65,15 +65,15 @@ private class SObjM_T {
     static void or_match() {
         System.assert(
             SObjM.or_x(
-                SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'Some different Name'}),
-                SObjM.valueOf(Account.Industry).equals('Some Industry')
+                SObjM.val(Account.Name).equals(new List<String>{ 'Some different Name'}),
+                SObjM.val(Account.Industry).equals('Some Industry')
             ).matches(new Account(Name = 'Some Name', Industry = 'Some Industry'))
         );
     }
 
     @IsTest
     static void or_multiple() {
-        SObjM.Matcher m = SObjM.valueOf(Account.Name).equals('Test');
+        SObjM.Matcher m = SObjM.val(Account.Name).equals('Test');
         System.assert(SObjM.or_x(m, m, m, m, m).matches(new Account(Name = 'Test')));
         System.assert(SObjM.or_x(m, m, m, m).matches(new Account(Name = 'Test')));
         System.assert(SObjM.or_x(m, m, m).matches(new Account(Name = 'Test')));
@@ -83,8 +83,8 @@ private class SObjM_T {
     static void or_noMatch() {
         System.assert(
             ! SObjM.or_x(new Set<SObjM.Matcher>{
-                SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'Some different Name'}),
-                SObjM.valueOf(Account.Industry).equals('Some different Industry')
+                SObjM.val(Account.Name).equals(new List<String>{ 'Some different Name'}),
+                SObjM.val(Account.Industry).equals('Some different Industry')
             }).matches(new Account(Name = 'Some Name', Industry = 'Some Industry'))
         );
     }
@@ -100,8 +100,8 @@ private class SObjM_T {
         acc2Old.Name = 'B old';
 
         SObjM.Result res = SObjM.or_x(
-                                SObjM.valueOf(Account.Name).changedTo('A'),
-                                SObjM.valueOf(Account.AnnualRevenue).equals(100)
+                                SObjM.val(Account.Name).changedTo('A'),
+                                SObjM.val(Account.AnnualRevenue).equals(100)
                             ).matches(
                                 new List<Account>{ acc1, acc2 },
                                 new Map<Id, Account>(new List<Account>{ acc1Old, acc2Old })
@@ -120,12 +120,12 @@ private class SObjM_T {
 
     @IsTest
     static void not_match() {
-        System.assert(SObjM.not_x(SObjM.valueOf(Account.Name).equals('A')).matches(new Account(Name = 'B')));
+        System.assert(SObjM.not_x(SObjM.val(Account.Name).equals('A')).matches(new Account(Name = 'B')));
     }
 
     @IsTest
     static void not_noMatch() {
-        System.assert(! SObjM.not_x(SObjM.valueOf(Account.Name).equals('A')).matches(new Account(Name = 'A')));
+        System.assert(! SObjM.not_x(SObjM.val(Account.Name).equals('A')).matches(new Account(Name = 'A')));
     }
 
     /**
@@ -134,22 +134,22 @@ private class SObjM_T {
 
     @IsTest
     static void equals_match() {
-        System.assert(SObjM.valueOf(Account.Name).equals('Some Name').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).equals('Some Name').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void equals_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equals('Some Name').matches(new Account(Name = 'Some different Name')));
+        System.assert(! SObjM.val(Account.Name).equals('Some Name').matches(new Account(Name = 'Some different Name')));
     }
 
     @IsTest
     static void equals_caseSensitive() {
-        System.assert(! SObjM.valueOf(Account.Name).equals('Some Name').matches(new Account(Name = 'some name')));
+        System.assert(! SObjM.val(Account.Name).equals('Some Name').matches(new Account(Name = 'some name')));
     }
 
     @IsTest
     static void equals_Number() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).equals(100).matches(new Account(AnnualRevenue = 100.0)));
+        System.assert(SObjM.val(Account.AnnualRevenue).equals(100).matches(new Account(AnnualRevenue = 100.0)));
     }
 
     /**
@@ -158,12 +158,12 @@ private class SObjM_T {
 
     @IsTest
     static void equalsIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).equalsIgnoreCase('Some Name').matches(new Account(Name = 'some Name')));
+        System.assert(SObjM.val(Account.Name).equalsIgnoreCase('Some Name').matches(new Account(Name = 'some Name')));
     }
 
     @IsTest
     static void equalsIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsIgnoreCase('Some Name').matches(new Account(Name = 'Some different Name')));
+        System.assert(! SObjM.val(Account.Name).equalsIgnoreCase('Some Name').matches(new Account(Name = 'Some different Name')));
     }
 
     /**
@@ -172,17 +172,17 @@ private class SObjM_T {
 
     @IsTest
     static void notEquals_match() {
-        System.assert(SObjM.valueOf(Account.Name).notEquals('Some Name').matches(new Account(Name = 'Some different Name')));
+        System.assert(SObjM.val(Account.Name).notEquals('Some Name').matches(new Account(Name = 'Some different Name')));
     }
 
     @IsTest
     static void notEquals_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notEquals('Some Name').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).notEquals('Some Name').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notEquals_caseSensitive() {
-        System.assert(SObjM.valueOf(Account.Name).notEquals('Some Name').matches(new Account(Name = 'some Name')));
+        System.assert(SObjM.val(Account.Name).notEquals('Some Name').matches(new Account(Name = 'some Name')));
     }
 
     /**
@@ -191,12 +191,12 @@ private class SObjM_T {
 
     @IsTest
     static void notEqualsIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).notEqualsIgnoreCase('Some Name').matches(new Account(Name = 'some different Name')));
+        System.assert(SObjM.val(Account.Name).notEqualsIgnoreCase('Some Name').matches(new Account(Name = 'some different Name')));
     }
 
     @IsTest
     static void notEqualsIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notEqualsIgnoreCase('Some Name').matches(new Account(Name = 'some name')));
+        System.assert(! SObjM.val(Account.Name).notEqualsIgnoreCase('Some Name').matches(new Account(Name = 'some name')));
     }
 
     /**
@@ -205,12 +205,12 @@ private class SObjM_T {
 
     @IsTest
     static void regex_match() {
-        System.assert(SObjM.valueOf(Account.Name).regex('^[0-9]+$').matches(new Account(Name = '12345')));
+        System.assert(SObjM.val(Account.Name).regex('^[0-9]+$').matches(new Account(Name = '12345')));
     }
 
     @IsTest
     static void regex_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).regex('^[0-9]+$').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).regex('^[0-9]+$').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -219,18 +219,18 @@ private class SObjM_T {
 
     @IsTest
     static void length_match() {
-        System.assert(SObjM.valueOf(Account.Name).length(5).matches(new Account(Name = '12345')));
+        System.assert(SObjM.val(Account.Name).length(5).matches(new Account(Name = '12345')));
     }
 
     @IsTest
     static void length_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).length(5).matches(new Account(Name = '1234')));
+        System.assert(! SObjM.val(Account.Name).length(5).matches(new Account(Name = '1234')));
     }
 
     @IsTest
     static void length_exception() {
         try {
-            SObjM.valueOf(Account.Name).length(null);
+            SObjM.val(Account.Name).length(null);
             System.assert(false);
         }
         catch(Exception e) { }
@@ -238,7 +238,7 @@ private class SObjM_T {
 
     @IsTest
     static void length_valueNull() {
-        System.assert(! SObjM.valueOf(Account.Name).length(1).matches(new Account(Name = null)));
+        System.assert(! SObjM.val(Account.Name).length(1).matches(new Account(Name = null)));
     }
 
     /**
@@ -247,18 +247,18 @@ private class SObjM_T {
 
     @IsTest
     static void minLength_match() {
-        System.assert(SObjM.valueOf(Account.Name).minLength(5).matches(new Account(Name = '12345')));
+        System.assert(SObjM.val(Account.Name).minLength(5).matches(new Account(Name = '12345')));
     }
 
     @IsTest
     static void minLength_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).minLength(5).matches(new Account(Name = '1234')));
+        System.assert(! SObjM.val(Account.Name).minLength(5).matches(new Account(Name = '1234')));
     }
 
     @IsTest
     static void minLength_exception() {
         try {
-            SObjM.valueOf(Account.Name).minLength(null);
+            SObjM.val(Account.Name).minLength(null);
             System.assert(false);
         }
         catch(Exception e) { }
@@ -266,7 +266,7 @@ private class SObjM_T {
 
     @IsTest
     static void minLength_valueNull() {
-        System.assert(! SObjM.valueOf(Account.Name).minLength(1).matches(new Account(Name = null)));
+        System.assert(! SObjM.val(Account.Name).minLength(1).matches(new Account(Name = null)));
     }
 
     /**
@@ -275,18 +275,18 @@ private class SObjM_T {
 
     @IsTest
     static void maxLength_match() {
-        System.assert(SObjM.valueOf(Account.Name).maxLength(5).matches(new Account(Name = '12345')));
+        System.assert(SObjM.val(Account.Name).maxLength(5).matches(new Account(Name = '12345')));
     }
 
     @IsTest
     static void maxLength_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).maxLength(5).matches(new Account(Name = '123456')));
+        System.assert(! SObjM.val(Account.Name).maxLength(5).matches(new Account(Name = '123456')));
     }
 
     @IsTest
     static void maxLength_exception() {
         try {
-            SObjM.valueOf(Account.Name).maxLength(null);
+            SObjM.val(Account.Name).maxLength(null);
             System.assert(false);
         }
         catch(Exception e) { }
@@ -294,7 +294,7 @@ private class SObjM_T {
 
     @IsTest
     static void maxLength_valueNull() {
-        System.assert(! SObjM.valueOf(Account.Name).maxLength(5).matches(new Account(Name = null)));
+        System.assert(! SObjM.val(Account.Name).maxLength(5).matches(new Account(Name = null)));
     }
 
     /**
@@ -303,18 +303,18 @@ private class SObjM_T {
 
     @IsTest
     static void lengthBetween_match() {
-        System.assert(SObjM.valueOf(Account.Name).lengthBetween(1, 5).matches(new Account(Name = '12345')));
+        System.assert(SObjM.val(Account.Name).lengthBetween(1, 5).matches(new Account(Name = '12345')));
     }
 
     @IsTest
     static void lengthBetween_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).lengthBetween(1, 5).matches(new Account(Name = '123456')));
+        System.assert(! SObjM.val(Account.Name).lengthBetween(1, 5).matches(new Account(Name = '123456')));
     }
 
     @IsTest
     static void lengthBetween_exception() {
         try {
-            SObjM.valueOf(Account.Name).lengthBetween(null, null);
+            SObjM.val(Account.Name).lengthBetween(null, null);
             System.assert(false);
         }
         catch(Exception e) { }
@@ -322,7 +322,7 @@ private class SObjM_T {
 
     @IsTest
     static void lengthBetween_valueNull() {
-        System.assert(! SObjM.valueOf(Account.Name).lengthBetween(1, 5).matches(new Account(Name = null)));
+        System.assert(! SObjM.val(Account.Name).lengthBetween(1, 5).matches(new Account(Name = null)));
     }
 
     /**
@@ -331,17 +331,17 @@ private class SObjM_T {
 
     @IsTest
     static void contains_match() {
-        System.assert(SObjM.valueOf(Account.Name).contains('Some').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).contains('Some').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void contains_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).contains('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).contains('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void contains_caseSensitive() {
-        System.assert(! SObjM.valueOf(Account.Name).contains('some').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).contains('some').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -350,17 +350,17 @@ private class SObjM_T {
 
     @IsTest
     static void notContains_match() {
-        System.assert(SObjM.valueOf(Account.Name).notContains('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notContains('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notContains_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notContains('Some').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).notContains('Some').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notContains_caseSensitive() {
-        System.assert(SObjM.valueOf(Account.Name).notContains('some').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notContains('some').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -369,12 +369,12 @@ private class SObjM_T {
 
     @IsTest
     static void containsIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).containsIgnoreCase('some').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).containsIgnoreCase('some').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void containsIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).containsIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).containsIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -383,12 +383,12 @@ private class SObjM_T {
 
     @IsTest
     static void notContainsIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).notContainsIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notContainsIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notContainsIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notContainsIgnoreCase('some').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).notContainsIgnoreCase('some').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -397,12 +397,12 @@ private class SObjM_T {
 
     @IsTest
     static void nil_match() {
-        System.assert(SObjM.valueOf(Account.Name).nil().matches(new Account(Name = null)));
+        System.assert(SObjM.val(Account.Name).nil().matches(new Account(Name = null)));
     }
 
     @IsTest
     static void nil_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).nil().matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).nil().matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -411,12 +411,12 @@ private class SObjM_T {
 
     @IsTest
     static void notNil_match() {
-        System.assert(SObjM.valueOf(Account.Name).notNil().matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notNil().matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notNil_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notNil().matches(new Account(Name = null)));
+        System.assert(! SObjM.val(Account.Name).notNil().matches(new Account(Name = null)));
     }
 
     /**
@@ -425,12 +425,12 @@ private class SObjM_T {
 
     @IsTest
     static void empty_match() {
-        System.assert(SObjM.valueOf(Account.Name).empty().matches(new Account(Name = '')));
+        System.assert(SObjM.val(Account.Name).empty().matches(new Account(Name = '')));
     }
 
     @IsTest
     static void empty_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).empty().matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).empty().matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -439,12 +439,12 @@ private class SObjM_T {
 
     @IsTest
     static void notEmpty_match() {
-        System.assert(SObjM.valueOf(Account.Name).notEmpty().matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notEmpty().matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notEmpty_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notEmpty().matches(new Account(Name = '')));
+        System.assert(! SObjM.val(Account.Name).notEmpty().matches(new Account(Name = '')));
     }
 
     /**
@@ -453,12 +453,12 @@ private class SObjM_T {
 
     @IsTest
     static void blank_match() {
-        System.assert(SObjM.valueOf(Account.Name).blank().matches(new Account(Name = ' ')));
+        System.assert(SObjM.val(Account.Name).blank().matches(new Account(Name = ' ')));
     }
 
     @IsTest
     static void blank_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).blank().matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).blank().matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -467,12 +467,12 @@ private class SObjM_T {
 
     @IsTest
     static void notBlank_match() {
-        System.assert(SObjM.valueOf(Account.Name).notBlank().matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).notBlank().matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void notBlank_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).notBlank().matches(new Account(Name = ' ')));
+        System.assert(! SObjM.val(Account.Name).notBlank().matches(new Account(Name = ' ')));
     }
 
     /**
@@ -481,22 +481,22 @@ private class SObjM_T {
 
     @IsTest
     static void equalsAny_match() {
-        System.assert(SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'A')));
+        System.assert(SObjM.val(Account.Name).equals(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'A')));
     }
 
     @IsTest
     static void equalsAny_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
+        System.assert(! SObjM.val(Account.Name).equals(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
     }
 
     @IsTest
     static void equalsAny_caseSensitive() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsAny(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
+        System.assert(! SObjM.val(Account.Name).equals(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
     }
 
     @IsTest
     static void equalsAny_Number() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).equalsAny(new List<Integer>{ 100, 200 }).matches(new Account(AnnualRevenue = 100.0)));
+        System.assert(SObjM.val(Account.AnnualRevenue).equals(new List<Integer>{ 100, 200 }).matches(new Account(AnnualRevenue = 100.0)));
     }
 
     /**
@@ -505,12 +505,12 @@ private class SObjM_T {
 
     @IsTest
     static void equalsAnyIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).equalsAnyIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
+        System.assert(SObjM.val(Account.Name).equalsIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
     }
 
     @IsTest
     static void equalsAnyIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsAnyIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
+        System.assert(! SObjM.val(Account.Name).equalsIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
     }
 
     /**
@@ -519,22 +519,22 @@ private class SObjM_T {
 
     @IsTest
     static void equalsNone_match() {
-        System.assert(SObjM.valueOf(Account.Name).equalsNone(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
+        System.assert(SObjM.val(Account.Name).equalsNone(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
     }
 
     @IsTest
     static void equalsNone_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsNone(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'A')));
+        System.assert(! SObjM.val(Account.Name).equalsNone(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'A')));
     }
 
     @IsTest
     static void equalsNone_Number() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).equalsNone(new List<Integer>{ 101, 200 }).matches(new Account(AnnualRevenue = 100.0)));
+        System.assert(SObjM.val(Account.AnnualRevenue).equalsNone(new List<Integer>{ 101, 200 }).matches(new Account(AnnualRevenue = 100.0)));
     }
 
     @IsTest
     static void equalsNone_Number_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).equalsNone(new List<Integer>{ 101, 200 }).matches(new Account(AnnualRevenue = 101.0)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).equalsNone(new List<Integer>{ 101, 200 }).matches(new Account(AnnualRevenue = 101.0)));
     }
 
     /**
@@ -543,12 +543,12 @@ private class SObjM_T {
 
     @IsTest
     static void equalsNoneIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).equalsNoneIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
+        System.assert(SObjM.val(Account.Name).equalsNoneIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'C')));
     }
 
     @IsTest
     static void equalsNoneIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).equalsNoneIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
+        System.assert(! SObjM.val(Account.Name).equalsNoneIgnoreCase(new List<String>{ 'A', 'B' }).matches(new Account(Name = 'a')));
     }
 
     /**
@@ -557,12 +557,12 @@ private class SObjM_T {
 
     @IsTest
     static void startsWith_match() {
-        System.assert(SObjM.valueOf(Account.Name).startsWith('So').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).startsWith('So').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void startsWith_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).startsWith('so').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).startsWith('so').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -571,12 +571,12 @@ private class SObjM_T {
 
     @IsTest
     static void startsWithIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).startsWithIgnoreCase('so').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).startsWithIgnoreCase('so').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void startsWithIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).startsWithIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).startsWithIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -585,12 +585,12 @@ private class SObjM_T {
 
     @IsTest
     static void endsWith_match() {
-        System.assert(SObjM.valueOf(Account.Name).endsWith('Name').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).endsWith('Name').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void endsWith_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).endsWith('name').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).endsWith('name').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -599,12 +599,12 @@ private class SObjM_T {
 
     @IsTest
     static void endsWithIgnoreCase_match() {
-        System.assert(SObjM.valueOf(Account.Name).endsWithIgnoreCase('name').matches(new Account(Name = 'Some Name')));
+        System.assert(SObjM.val(Account.Name).endsWithIgnoreCase('name').matches(new Account(Name = 'Some Name')));
     }
 
     @IsTest
     static void endsWithIgnoreCase_noMatch() {
-        System.assert(! SObjM.valueOf(Account.Name).endsWithIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
+        System.assert(! SObjM.val(Account.Name).endsWithIgnoreCase('Foo').matches(new Account(Name = 'Some Name')));
     }
 
     /**
@@ -613,17 +613,17 @@ private class SObjM_T {
 
     @IsTest
     static void greater_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).greater(99).matches(new Account(AnnualRevenue = 100)));
+        System.assert(SObjM.val(Account.AnnualRevenue).greater(99).matches(new Account(AnnualRevenue = 100)));
     }
 
     @IsTest
     static void greater_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).greater(100).matches(new Account(AnnualRevenue = 100)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).greater(100).matches(new Account(AnnualRevenue = 100)));
     }
 
     @IsTest
     static void greater_Date() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).greater(Date.newInstance(2021, 1, 1)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
+        System.assert(SObjM.val(Contact.Birthdate).greater(Date.newInstance(2021, 1, 1)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
     }
 
     /**
@@ -632,17 +632,17 @@ private class SObjM_T {
 
     @IsTest
     static void less_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).less(100).matches(new Account(AnnualRevenue = 99)));
+        System.assert(SObjM.val(Account.AnnualRevenue).less(100).matches(new Account(AnnualRevenue = 99)));
     }
 
     @IsTest
     static void less_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).less(99).matches(new Account(AnnualRevenue = 100)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).less(99).matches(new Account(AnnualRevenue = 100)));
     }
 
     @IsTest
     static void less_Date() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).less(Date.newInstance(2021, 1, 2)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
+        System.assert(SObjM.val(Contact.Birthdate).less(Date.newInstance(2021, 1, 2)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
     }
 
     /**
@@ -651,17 +651,17 @@ private class SObjM_T {
 
     @IsTest
     static void greaterEquals_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).greaterEquals(100).matches(new Account(AnnualRevenue = 100)));
+        System.assert(SObjM.val(Account.AnnualRevenue).greaterEquals(100).matches(new Account(AnnualRevenue = 100)));
     }
 
     @IsTest
     static void greaterEquals_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).greaterEquals(100).matches(new Account(AnnualRevenue = 99)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).greaterEquals(100).matches(new Account(AnnualRevenue = 99)));
     }
 
     @IsTest
     static void greaterEquals_Date() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).greaterEquals(Date.newInstance(2021, 1, 1)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
+        System.assert(SObjM.val(Contact.Birthdate).greaterEquals(Date.newInstance(2021, 1, 1)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
     }
 
     /**
@@ -670,17 +670,17 @@ private class SObjM_T {
 
     @IsTest
     static void lessEquals_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).lessEquals(100).matches(new Account(AnnualRevenue = 100)));
+        System.assert(SObjM.val(Account.AnnualRevenue).lessEquals(100).matches(new Account(AnnualRevenue = 100)));
     }
 
     @IsTest
     static void lessEquals_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).lessEquals(100).matches(new Account(AnnualRevenue = 101)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).lessEquals(100).matches(new Account(AnnualRevenue = 101)));
     }
 
     @IsTest
     static void lessEquals_Date() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).lessEquals(Date.newInstance(2021, 1, 2)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
+        System.assert(SObjM.val(Contact.Birthdate).lessEquals(Date.newInstance(2021, 1, 2)).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
     }
 
     /**
@@ -689,18 +689,18 @@ private class SObjM_T {
 
     @IsTest
     static void betweenIncl_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).betweenIncl(1, 2).matches(new Account(AnnualRevenue = 1)));
+        System.assert(SObjM.val(Account.AnnualRevenue).betweenIncl(1, 2).matches(new Account(AnnualRevenue = 1)));
     }
 
     @IsTest
     static void betweenIncl_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).betweenIncl(1, 2).matches(new Account(AnnualRevenue = 0)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).betweenIncl(1, 2).matches(new Account(AnnualRevenue = 0)));
     }
 
     @IsTest
     static void betweenIncl_Date() {
         System.assert(
-            SObjM.valueOf(Contact.Birthdate)
+            SObjM.val(Contact.Birthdate)
                     .betweenIncl(Date.newInstance(2021, 1, 1), Date.newInstance(2021, 1, 2))
                     .matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1)))
         );
@@ -712,18 +712,18 @@ private class SObjM_T {
 
     @IsTest
     static void betweenExcl_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).betweenExcl(1, 3).matches(new Account(AnnualRevenue = 2)));
+        System.assert(SObjM.val(Account.AnnualRevenue).betweenExcl(1, 3).matches(new Account(AnnualRevenue = 2)));
     }
 
     @IsTest
     static void betweenExcl_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).betweenExcl(1, 3).matches(new Account(AnnualRevenue = 1)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).betweenExcl(1, 3).matches(new Account(AnnualRevenue = 1)));
     }
 
     @IsTest
     static void betweenExcl_Date() {
         System.assert(
-            SObjM.valueOf(Contact.Birthdate)
+            SObjM.val(Contact.Birthdate)
                     .betweenExcl(Date.newInstance(2021, 1, 1), Date.newInstance(2021, 1, 3))
                     .matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2)))
         );
@@ -735,18 +735,18 @@ private class SObjM_T {
 
     @IsTest
     static void outsideIncl_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).outsideIncl(1, 3).matches(new Account(AnnualRevenue = 1)));
+        System.assert(SObjM.val(Account.AnnualRevenue).outsideIncl(1, 3).matches(new Account(AnnualRevenue = 1)));
     }
 
     @IsTest
     static void outsideIncl_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).outsideIncl(1, 3).matches(new Account(AnnualRevenue = 2)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).outsideIncl(1, 3).matches(new Account(AnnualRevenue = 2)));
     }
 
     @IsTest
     static void outsideIncl_Date() {
         System.assert(
-            SObjM.valueOf(Contact.Birthdate)
+            SObjM.val(Contact.Birthdate)
                     .outsideIncl(Date.newInstance(2021, 1, 1), Date.newInstance(2021, 1, 2))
                     .matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1)))
         );
@@ -758,18 +758,18 @@ private class SObjM_T {
 
     @IsTest
     static void outsideExcl_match() {
-        System.assert(SObjM.valueOf(Account.AnnualRevenue).outsideExcl(1, 3).matches(new Account(AnnualRevenue = 0)));
+        System.assert(SObjM.val(Account.AnnualRevenue).outsideExcl(1, 3).matches(new Account(AnnualRevenue = 0)));
     }
 
     @IsTest
     static void outsideExcl_noMatch() {
-        System.assert(! SObjM.valueOf(Account.AnnualRevenue).outsideExcl(1, 3).matches(new Account(AnnualRevenue = 2)));
+        System.assert(! SObjM.val(Account.AnnualRevenue).outsideExcl(1, 3).matches(new Account(AnnualRevenue = 2)));
     }
 
     @IsTest
     static void outsideExcl_Date() {
         System.assert(
-            SObjM.valueOf(Contact.Birthdate)
+            SObjM.val(Contact.Birthdate)
                     .outsideExcl(Date.newInstance(2021, 1, 2), Date.newInstance(2021, 1, 4))
                     .matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1)))
         );
@@ -790,12 +790,12 @@ private class SObjM_T {
 
     @IsTest
     static void must_match() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).must(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
+        System.assert(SObjM.val(Contact.Birthdate).must(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
     }
 
     @IsTest
     static void must_noMatch() {
-        System.assert(! SObjM.valueOf(Contact.Birthdate).must(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
+        System.assert(! SObjM.val(Contact.Birthdate).must(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
     }
 
     /**
@@ -804,12 +804,12 @@ private class SObjM_T {
 
     @IsTest
     static void mustNot_match() {
-        System.assert(SObjM.valueOf(Contact.Birthdate).mustNot(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
+        System.assert(SObjM.val(Contact.Birthdate).mustNot(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 2))));
     }
 
     @IsTest
     static void mustNot_noMatch() {
-        System.assert(! SObjM.valueOf(Contact.Birthdate).mustNot(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
+        System.assert(! SObjM.val(Contact.Birthdate).mustNot(new BeFirstDayOfYear()).matches(new Contact(Birthdate = Date.newInstance(2021, 1, 1))));
     }
 
     /**
@@ -819,7 +819,7 @@ private class SObjM_T {
     @IsTest
     static void changed_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
+            SObjM.val(Account.Name)
                     .changed()
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
@@ -828,7 +828,7 @@ private class SObjM_T {
     @IsTest
     static void changed_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changed()
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
@@ -837,7 +837,7 @@ private class SObjM_T {
     @IsTest
     static void changed_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changed()
                     .matches(new Account(Name = 'Some Name'))
         );
@@ -846,7 +846,7 @@ private class SObjM_T {
     @IsTest
     static void changed_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
+            SObjM.val(Account.AnnualRevenue)
                     .changed()
                     .matches(new Account(AnnualRevenue = 100), new Account(AnnualRevenue = 101))
         );
@@ -859,7 +859,7 @@ private class SObjM_T {
     @IsTest
     static void changedFrom_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
+            SObjM.val(Account.Name)
                     .changedFrom('Old')
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
@@ -868,7 +868,7 @@ private class SObjM_T {
     @IsTest
     static void changedFrom_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedFrom('Old')
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
@@ -877,7 +877,7 @@ private class SObjM_T {
     @IsTest
     static void changedFrom_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedFrom('still same')
                     .matches(new Account(Name = 'still same'))
         );
@@ -886,7 +886,7 @@ private class SObjM_T {
     @IsTest
     static void changedFrom_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
+            SObjM.val(Account.AnnualRevenue)
                     .changedFrom(100)
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
@@ -899,8 +899,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAny_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
-                    .changedFromAny(new List<String>{ 'Old' })
+            SObjM.val(Account.Name)
+                    .changedFrom(new List<String>{ 'Old' })
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
     }
@@ -908,8 +908,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAny_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAny(new List<String>{ 'Old' })
+            ! SObjM.val(Account.Name)
+                    .changedFrom(new List<String>{ 'Old' })
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
     }
@@ -917,8 +917,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAny_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAny(new List<String>{ 'still same' })
+            ! SObjM.val(Account.Name)
+                    .changedFrom(new List<String>{ 'still same' })
                     .matches(new Account(Name = 'still same'))
         );
     }
@@ -926,8 +926,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAny_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
-                    .changedFromAny(new List<Integer>{ 100 })
+            SObjM.val(Account.AnnualRevenue)
+                    .changedFrom(new List<Integer>{ 100 })
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
     }
@@ -939,7 +939,7 @@ private class SObjM_T {
     @IsTest
     static void changedTo_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
+            SObjM.val(Account.Name)
                     .changedTo('New')
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
@@ -948,7 +948,7 @@ private class SObjM_T {
     @IsTest
     static void changedTo_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedTo('Old')
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
@@ -957,7 +957,7 @@ private class SObjM_T {
     @IsTest
     static void changedTo_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedTo('still same')
                     .matches(new Account(Name = 'still same'))
         );
@@ -966,7 +966,7 @@ private class SObjM_T {
     @IsTest
     static void changedTo_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
+            SObjM.val(Account.AnnualRevenue)
                     .changedTo(101)
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
@@ -979,8 +979,8 @@ private class SObjM_T {
     @IsTest
     static void changedToAny_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
-                    .changedToAny(new List<String>{ 'New' })
+            SObjM.val(Account.Name)
+                    .changedTo(new List<String>{ 'New' })
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
     }
@@ -988,8 +988,8 @@ private class SObjM_T {
     @IsTest
     static void changedToAny_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedToAny(new List<String>{ 'Old' })
+            ! SObjM.val(Account.Name)
+                    .changedTo(new List<String>{ 'Old' })
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
     }
@@ -997,8 +997,8 @@ private class SObjM_T {
     @IsTest
     static void changedToAny_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedToAny(new List<String>{ 'still same' })
+            ! SObjM.val(Account.Name)
+                    .changedTo(new List<String>{ 'still same' })
                     .matches(new Account(Name = 'still same'))
         );
     }
@@ -1006,8 +1006,8 @@ private class SObjM_T {
     @IsTest
     static void changedToAny_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
-                    .changedToAny(new List<Integer>{ 101 })
+            SObjM.val(Account.AnnualRevenue)
+                    .changedTo(new List<Integer>{ 101 })
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
     }
@@ -1019,7 +1019,7 @@ private class SObjM_T {
     @IsTest
     static void changedFromTo_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
+            SObjM.val(Account.Name)
                     .changedFromTo('Old', 'New')
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
@@ -1028,7 +1028,7 @@ private class SObjM_T {
     @IsTest
     static void changedFromTo_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedFromTo('Old', 'New')
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
@@ -1037,7 +1037,7 @@ private class SObjM_T {
     @IsTest
     static void changedFromTo_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
+            ! SObjM.val(Account.Name)
                     .changedFromTo('Old', 'New')
                     .matches(new Account(Name = 'still same'))
         );
@@ -1046,7 +1046,7 @@ private class SObjM_T {
     @IsTest
     static void changedFromTo_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
+            SObjM.val(Account.AnnualRevenue)
                     .changedFromTo(100, 101)
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
@@ -1059,8 +1059,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyTo_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
-                    .changedFromAnyTo(new List<String>{ 'Old' }, 'New')
+            SObjM.val(Account.Name)
+                    .changedFromTo(new List<String>{ 'Old' }, 'New')
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
     }
@@ -1068,8 +1068,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyTo_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAnyTo(new List<String>{ 'Old' }, 'Old')
+            ! SObjM.val(Account.Name)
+                    .changedFromTo(new List<String>{ 'Old' }, 'Old')
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
     }
@@ -1077,8 +1077,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyTo_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAnyTo(new List<String>{ 'still same' }, 'still same')
+            ! SObjM.val(Account.Name)
+                    .changedFromTo(new List<String>{ 'still same' }, 'still same')
                     .matches(new Account(Name = 'still same'))
         );
     }
@@ -1086,8 +1086,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyTo_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
-                    .changedFromAnyTo(new List<Integer>{ 100 }, 101)
+            SObjM.val(Account.AnnualRevenue)
+                    .changedFromTo(new List<Integer>{ 100 }, 101)
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
     }
@@ -1099,8 +1099,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromToAny_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
-                    .changedFromToAny('Old', new List<String>{ 'New' })
+            SObjM.val(Account.Name)
+                    .changedFromTo('Old', new List<String>{ 'New' })
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
     }
@@ -1108,8 +1108,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromToAny_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromToAny('Old', new List<String>{ 'Old' })
+            ! SObjM.val(Account.Name)
+                    .changedFromTo('Old', new List<String>{ 'Old' })
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
     }
@@ -1117,8 +1117,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromToAny_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromToAny('still same', new List<String>{ 'still same' })
+            ! SObjM.val(Account.Name)
+                    .changedFromTo('still same', new List<String>{ 'still same' })
                     .matches(new Account(Name = 'still same'))
         );
     }
@@ -1126,8 +1126,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromToAny_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
-                    .changedFromToAny(100, new List<Integer>{ 101 })
+            SObjM.val(Account.AnnualRevenue)
+                    .changedFromTo(100, new List<Integer>{ 101 })
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
     }
@@ -1139,8 +1139,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyToAny_match() {
         System.assert(
-            SObjM.valueOf(Account.Name)
-                .changedFromAnyToAny(new List<String>{ 'Old' }, new List<String>{ 'New' })
+            SObjM.val(Account.Name)
+                .changedFromTo(new List<String>{ 'Old' }, new List<String>{ 'New' })
                 .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
     }
@@ -1148,8 +1148,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyToAny_noMatch() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAnyToAny(new List<String>{ 'Old' }, new List<String>{ 'Old' })
+            ! SObjM.val(Account.Name)
+                    .changedFromTo(new List<String>{ 'Old' }, new List<String>{ 'Old' })
                     .matches(new Account(Name = 'Old'), new Account(Name = 'Old'))
         );
     }
@@ -1157,8 +1157,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyToAny_noOldValue() {
         System.assert(
-            ! SObjM.valueOf(Account.Name)
-                    .changedFromAnyToAny(new List<String>{ 'still same' }, new List<String>{ 'still same' })
+            ! SObjM.val(Account.Name)
+                    .changedFromTo(new List<String>{ 'still same' }, new List<String>{ 'still same' })
                     .matches(new Account(Name = 'still same'))
         );
     }
@@ -1166,8 +1166,8 @@ private class SObjM_T {
     @IsTest
     static void changedFromAnyToAny_match_Number() {
         System.assert(
-            SObjM.valueOf(Account.AnnualRevenue)
-                    .changedFromAnyToAny(new List<Integer>{ 100 }, new List<Integer>{ 101 })
+            SObjM.val(Account.AnnualRevenue)
+                    .changedFromTo(new List<Integer>{ 100 }, new List<Integer>{ 101 })
                     .matches(new Account(AnnualRevenue = 101), new Account(AnnualRevenue = 100))
         );
     }
@@ -1179,7 +1179,7 @@ private class SObjM_T {
     @IsTest
     static void priorValueOf_match() {
         System.assert(
-            SObjM.priorValueOf(Account.Name)
+            SObjM.priorVal(Account.Name)
                     .equals('Old')
                     .matches(new Account(Name = 'New'), new Account(Name = 'Old'))
         );
@@ -1188,7 +1188,7 @@ private class SObjM_T {
     @IsTest
     static void priorValueOf_noMatch() {
         System.assert(
-            ! SObjM.priorValueOf(Account.Name)
+            ! SObjM.priorVal(Account.Name)
                     .equals('Old')
                     .matches(new Account(Name = 'New'), new Account(Name = 'New'))
         );
@@ -1197,7 +1197,7 @@ private class SObjM_T {
     @IsTest
     static void priorValueOf_noOldVersionProvided() {
         System.assert(
-            SObjM.priorValueOf(Account.Name)
+            SObjM.priorVal(Account.Name)
                     .equals('New')
                     .matches(new Account(Name = 'New'))
         );
@@ -1210,8 +1210,8 @@ private class SObjM_T {
     @IsTest
     static void matches_list() {
         List<String> names = new List<String>{ 'A', 'C' };
-        SObjM.Result res = SObjM.valueOf(Account.Name)
-                                .equalsAny(names)
+        SObjM.Result res = SObjM.val(Account.Name)
+                                .equals(names)
                                 .matches(new List<Account>{
                                     new Account(Name = 'A'),
                                     new Account(Name = 'B'),
@@ -1252,8 +1252,8 @@ private class SObjM_T {
         accDOld.Name = 'D old';
 
         List<String> names = new List<String>{ 'A', 'C' };
-        SObjM.Result res = SObjM.valueOf(Account.Name)
-                                .changedToAny(names)
+        SObjM.Result res = SObjM.val(Account.Name)
+                                .changedTo(names)
                                 .matches(
                                     new List<Account>{ accA, accB, accC, accD },
                                     new Map<Id, Account>(new List<Account>{ accAOld, accBOld, accCOld, accDOld }));
@@ -1276,7 +1276,7 @@ private class SObjM_T {
         Account accOld = new Account(Name = 'A', Id = getFakeId(Account.SObjectType));
 
         try {
-            SObjM.valueOf(Account.Name).changed().matches(new List<Account>{ accNew }, new Map<Id, Account>(new List<Account>{ accOld }));
+            SObjM.val(Account.Name).changed().matches(new List<Account>{ accNew }, new Map<Id, Account>(new List<Account>{ accOld }));
             System.assert(false, 'should throw exception');
         }
         catch(Exception e) { }

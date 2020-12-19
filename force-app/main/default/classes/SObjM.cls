@@ -5,10 +5,10 @@ public class SObjM {
     * 
     * Example:
     *
-    * SObjM.valueOf(...).equals(...).matches(sObj) => sObj will be used
-    * SObjM.valueOf(...).equals(...).matches(sObj, sObjOld) => sObj will be used
+    * SObjM.val(...).equals(...).matches(sObj) => sObj will be used
+    * SObjM.val(...).equals(...).matches(sObj, sObjOld) => sObj will be used
     */
-    public static BeforeAfterFunc valueOf(SObjectField field) {
+    public static BeforeAfterFunc val(SObjectField field) {
         checkField(field);
         return new BeforeAfterFunc(field);
     }
@@ -18,10 +18,10 @@ public class SObjM {
     * 
     * Example:
     *
-    * SObjM.priorValueOf(...).equals(...).matches(sObj) => sObj will be used
-    * SObjM.priorvalueOf(...).equals(...).matches(sObj, sObjOld) => sObjOld will be used
+    * SObjM.priorVal(...).equals(...).matches(sObj) => sObj will be used
+    * SObjM.priorVal(...).equals(...).matches(sObj, sObjOld) => sObjOld will be used
     */
-    public static Func priorValueOf(SObjectField field) {
+    public static Func priorVal(SObjectField field) {
         checkField(field);
         return new Func(field, true);
     }
@@ -33,8 +33,8 @@ public class SObjM {
     * Example:
     *
     * SObjM.and_x(
-    *	SObjM.valueOf(...).equals(...),
-    * 	SObjM.valueOf(...).equals(...),
+    *	SObjM.val(...).equals(...),
+    * 	SObjM.val(...).equals(...),
     * )
     */
 
@@ -73,8 +73,8 @@ public class SObjM {
     * Example:
     *
     * SObjM.or_x(
-    *	SObjM.valueOf(...).equals(...),
-    * 	SObjM.valueOf(...).equals(...),
+    *	SObjM.val(...).equals(...),
+    * 	SObjM.val(...).equals(...),
     * )
     */
 
@@ -111,7 +111,7 @@ public class SObjM {
     * 
     * Example:
     *
-    * SObjM.not_x( SObjM.valueOf(...).equals(...) )
+    * SObjM.not_x( SObjM.val(...).equals(...) )
     */
 
     public static Matcher not_x(SObjM.Matcher matcher) {
@@ -208,11 +208,11 @@ public class SObjM {
             return SObjM.not_x(new Blank(this.field, this.isPriorValue));
         }
 
-        public SObjM.Matcher equalsAny(List<Object> expectedValues) {
+        public SObjM.Matcher equals(List<Object> expectedValues) {
             return new EqualsAny(this.field, this.isPriorValue, expectedValues);
         }
 
-        public SObjM.Matcher equalsAnyIgnoreCase(List<String> expectedValues) {
+        public SObjM.Matcher equalsIgnoreCase(List<String> expectedValues) {
             return new EqualsAnyIgnoreCase(this.field, this.isPriorValue, expectedValues);
         }
         
@@ -327,7 +327,7 @@ public class SObjM {
             return new ChangedFrom(this.field, oldValue);
         }
 
-        public SObjM.Matcher changedFromAny(List<Object> oldValues) {
+        public SObjM.Matcher changedFrom(List<Object> oldValues) {
             return new ChangedFromAny(this.field, oldValues);
         }
 
@@ -335,7 +335,7 @@ public class SObjM {
             return new ChangedTo(this.field, newValue);
         }
 
-        public SObjM.Matcher changedToAny(List<Object> newValues) {
+        public SObjM.Matcher changedTo(List<Object> newValues) {
             return new ChangedToAny(this.field, newValues);
         }
 
@@ -343,15 +343,15 @@ public class SObjM {
             return new ChangedFromTo(this.field, oldValue, newValue);
         }
 
-        public SObjM.Matcher changedFromAnyTo(List<Object> oldValues, Object newValue) {
+        public SObjM.Matcher changedFromTo(List<Object> oldValues, Object newValue) {
             return new ChangedFromAnyTo(this.field, oldValues, newValue);
         }
 
-        public SObjM.Matcher changedFromToAny(Object oldValue, List<Object> newValues) {
+        public SObjM.Matcher changedFromTo(Object oldValue, List<Object> newValues) {
             return new ChangedFromToAny(this.field, oldValue, newValues);
         }
 
-        public SObjM.Matcher changedFromAnyToAny(List<Object> oldValues, List<Object> newValues) {
+        public SObjM.Matcher changedFromTo(List<Object> oldValues, List<Object> newValues) {
             return new ChangedFromAnyToAny(this.field, oldValues, newValues);
         }
     }
