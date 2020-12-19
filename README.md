@@ -39,7 +39,7 @@ For some time, I had been googling to find a project that solves this problem bu
 
 So being forced to stay at home during the COVID pandemic gave me some time to come up with a solution that fits (most of) my requirements.
 
-The outcome is just one class that has zero dependencies and can be used in any org. New matchers can be implmented by extending the SObjM.Matcher class. Keep reading and further information ;)
+The outcome is just one class that has zero dependencies and can be used in any org. New matchers can be implemented by extending the SObjM.Matcher class. Keep reading for further information ;)
 
 The previous example using this class looks like this:
 
@@ -66,7 +66,7 @@ There are 5 ways to instantiate a matcher:
 
 #### val()
 
-Using this method, you can create a matcher who matches on a sObject.
+Using this method, you can create a matcher that evaluates a sObject.
 
 Example:
 
@@ -76,7 +76,7 @@ SObjM.Matcher matcher = SObjM.val(Account.Name).equals('xyz');
 
 #### priorVal()
 
-Using this method, you can create a matcher who matches the old sObject if present. If old sObject is not present, it will behave just like val().
+Using this method, you can create a matcher that evaluates an old sObject if present. If old sObject is not present, it will behave just like val().
 
 Example:
 
@@ -86,7 +86,7 @@ SObjM.Matcher matcher = SObjM.priorVal(Account.Name).equals('xyz');
 
 #### not_x()
 
-Using this method, you can create a matcher who negates the matcher that is passed into it.
+Using this method, you can create a matcher that negates the matcher that is passed.
 
 Example:
 
@@ -96,7 +96,7 @@ SObjM.Matcher matcher = SObjM.not_x( SObjM.val(Account.Name).equals('xyz') );
 
 #### and_x()
 
-Using this method, you can create a matcher who groups all passed matchers by an and-operation.
+Using this method, you can create a matcher that groups all passed matchers by an and-operation.
 
 Example:
 
@@ -132,7 +132,7 @@ To do so, you have four methods.
 
 #### Boolean matches(SObject)
 
-If you need to check if <b>one</b> sObject meets certain criterias, then use this method.
+Use this method, if you need to check if <b>one</b> sObject meets certain criterias.
 
 Example:
 
@@ -146,7 +146,7 @@ if(accNameIsXyz.matches(someAccount)) {
 
 #### Boolean matches(SObject, SObject)
 
-If you need to check if <b>one</b> sObject meets certain criterias and also need to check the <b>old version</b> of the sObject, then use this method.
+Use this method, if you need to check if <b>one</b> sObject meets certain criterias and also need to check the <b>old version</b> of the sObject.
 
 Example:
 
@@ -162,7 +162,7 @@ if(accountNameChangedFromNewToOld.matches(newAccount, oldAccount)) {
 
 #### SObjM.Result matches(List<SObject>)
 
-If you need to check if <b>multiple</b> sObjects meet certain criterias, then use this method.
+Use this method, if you need to check if <b>multiple</b> sObjects meet certain criterias.
 
 Example:
 
@@ -176,7 +176,7 @@ List<Account> nonMatchingAccounts = (List<Account>) res.misses;
 
 #### Boolean matches(List<SObject>, Map<Id, SObject>)
 
-If you need to check if <b>multiple</b> sObjects meet certain criterias and you also need to check the <b>old version</b> of the sObject, then use this method.
+Use this method, if you need to check if <b>multiple</b> sObjects meet certain criterias and you also need to check the <b>old version</b> of the sObject.
 
 Example:
 
@@ -193,7 +193,7 @@ List<Account> nonMatchingAccounts = (List<Account>) res.misses;
 
 ### Creating a custom matcher
 
-If the built-in matchers do not meet your requirement, then you can easily create a custom matcher by extending the SObjM.Matcher class.
+If the built-in matchers do not meet your requirement, create a custom matcher by extending the SObjM.Matcher class.
 
 Example:
 
@@ -215,7 +215,7 @@ public class BeFirstDayOfMonth extends SObjM.Matcher {
 }
 ```
 
-You can then use the custom matcher by passing an instance of it into the methods must() / mustNot()
+You can use the custom matcher by passing an instance of it into the methods must() / mustNot()
 
 ```javascript
 SObjM.Matcher m = SObjM.val(Opportunity.CloseDate).must(new BeFirstDayOfMonth());
