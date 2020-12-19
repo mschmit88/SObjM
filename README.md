@@ -160,7 +160,7 @@ if(accountNameChangedFromNewToOld.matches(newAccount, oldAccount)) {
 }
 ```
 
-#### SObjM.Result matches(List<SObject>)
+#### SObjM.Result matches(SObject[])
 
 Use this method, if you need to check if <b>multiple</b> sObjects meet certain criterias.
 
@@ -174,7 +174,7 @@ List<Account> matchingAccounts = (List<Account>) res.hits;
 List<Account> nonMatchingAccounts = (List<Account>) res.misses;
 ```
 
-#### Boolean matches(List<SObject>, Map<Id, SObject>)
+#### Boolean matches(SObject[], Map<Id, SObject>)
 
 Use this method, if you need to check if <b>multiple</b> sObjects meet certain criterias and you also need to check the <b>old version</b> of the sObject.
 
