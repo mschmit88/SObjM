@@ -41,7 +41,7 @@ So being forced to stay at home during the COVID pandemic gave me some time to c
 
 The outcome is just one class that has zero dependencies and can be used in any org. New matchers can be implemented by extending the SObjM.Matcher class. Keep reading for further information ;)
 
-The previous example using this class looks like this:
+The coding solving the previous requirement using this class looks like this:
 
 ```javascript
 List<Account> accs = // Trigger.new or wherever they came from

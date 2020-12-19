@@ -1,7 +1,7 @@
 public class SObjM {
 
     /**
-    * valueOf - will always match new version of sObject
+    * val - will always match new version of sObject
     * 
     * Example:
     *
@@ -14,7 +14,7 @@ public class SObjM {
     }
 
     /**
-    * priorValueOf - will match old version of sObject if present, otherwise new version
+    * priorVal - will match old version of sObject if present, otherwise new version
     * 
     * Example:
     *
@@ -120,7 +120,7 @@ public class SObjM {
 
     /**
     * Func - inits all matchers that do not necessarily need the old version of the sObject
-    * priorValueOf can only init matchers provided by this class
+    * priorVal can only init matchers provided by this class
     */	
 
     public virtual class Func {
@@ -311,7 +311,7 @@ public class SObjM {
 
     /**
     * BeforeAfterFunc - inits all matchers that do need the old version of the sObject
-    * only valueOf is able to init matchers provided by this class
+    * only val is able to init matchers provided by this class
     */		
     
     public virtual class BeforeAfterFunc extends Func {
